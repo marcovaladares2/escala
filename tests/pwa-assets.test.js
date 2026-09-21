@@ -1,0 +1,3 @@
+const assert = require("node:assert/strict"); const fs = require("node:fs"); const path = require("node:path");
+const root = path.resolve(__dirname, ".."); const manifest = JSON.parse(fs.readFileSync(path.join(root, "manifest.webmanifest"), "utf8")); const worker = fs.readFileSync(path.join(root, "sw.js"), "utf8");
+assert.equal(manifest.name, "Escala Pediatria"); assert.equal(manifest.display, "standalone"); assert.match(worker, /pediatria-schedule-v2/); assert.match(worker, /skipWaiting/); assert.match(worker, /clients\.claim/); assert.ok(fs.existsSync(path.join(root, "icons", "icon.svg"))); console.log("PASS PWA manifest, ícone e service worker validados");
