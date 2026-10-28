@@ -185,7 +185,7 @@ document.addEventListener("submit", (event) => {
     submitButton.disabled = true; submitButton.textContent = "Gerando…";
     weeklyFormService.generate({ residentId: form.get("residentId"), institution: form.get("institution"), monthValue: form.get("monthValue"), weeks })
       .then((files) => {
-        files.forEach((file) => { const link = document.createElement("a"); link.href = URL.createObjectURL(file.blob); link.download = file.filename; link.click(); window.setTimeout(() => URL.revokeObjectURL(link.href), 1000); });
+        files.forEach((file) => { const docxBlob = new Blob([file.blob], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" }); const link = document.createElement("a"); link.href = URL.createObjectURL(docxBlob); link.download = file.filename; link.click(); window.setTimeout(() => URL.revokeObjectURL(link.href), 1000); });
         document.getElementById("detail-dialog").close(); showToast(files.length === 1 ? "Ficha DOCX gerada" : `${files.length} fichas DOCX geradas`);
       })
       .catch((error) => { console.error("Falha ao gerar ficha semanal:", error); warning.hidden = false; warning.textContent = error.message || "Não foi possível gerar a ficha."; submitButton.disabled = false; submitButton.textContent = "Gerar fichas DOCX"; });

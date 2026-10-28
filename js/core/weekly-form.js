@@ -1,4 +1,5 @@
 (function () {
+  const DOCX_MIME_TYPE = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
   const TEMPLATE_BY_INSTITUTION = {
     AGAS: "assets/templates/ficha-agas.docx",
     UNIATENAS: "assets/templates/ficha-uniatenas.docx"
@@ -208,7 +209,10 @@
         }
       if (institution === "AGAS") compactAgasDescriptions(xml, tables);
       zip.file("word/document.xml", new XMLSerializer().serializeToString(xml));
-      const blob = await zip.generateAsync({ type: "blob", compression: "DEFLATE" });
+      // DOCX is internally a ZIP, but mobile systems need the official Word MIME
+      // type so they do not offer it as a generic compressed folder.
+      const zipBlob = await zip.generateAsync({ type: "blob", compression: "DEFLATE", mimeType: DOCX_MIME_TYPE });
+      const blob = new Blob([zipBlob], { type: DOCX_MIME_TYPE });
       const levelAndLetter = mondaySchedule.standardWeekKey.replace("-", "-");
       results.push({ blob, filename: `${safeFilename(resident.name)}_${levelAndLetter}_${week.start.split("-").reverse().join("-")}_a_${week.end.split("-").reverse().join("-")}_${institution}.docx` });
     }
