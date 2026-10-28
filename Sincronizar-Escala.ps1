@@ -81,7 +81,9 @@ Invoke-Git commit -m $Mensagem
 Invoke-Git fetch origin $Branch
 $referenciaRemota = & git rev-parse --verify "refs/remotes/origin/$Branch" 2>$null
 if ($LASTEXITCODE -eq 0 -and $referenciaRemota) {
-  & git merge "origin/$Branch" --allow-unrelated-histories --no-edit
+  # Esta pasta é a fonte atual do projeto. Em arquivos equivalentes de um
+  # histórico anterior do GitHub, preserva a versão local sem force push.
+  & git merge "origin/$Branch" --allow-unrelated-histories -X ours --no-edit
   if ($LASTEXITCODE -ne 0) {
     & git merge --abort 2>$null
     throw "Houve conflito ao integrar o histórico remoto. Nenhum arquivo foi enviado ao GitHub; resolva os conflitos locais e execute o script novamente."
