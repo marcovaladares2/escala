@@ -1,0 +1,11 @@
+# Arquivos locais e temporários: não fazem parte do site publicado.
+.openai/
+tmp/
+work/
+outputs/
+
+# Arquivos do sistema/editor.
+.DS_Store
+Thumbs.db
+*.tmp
+*.bak

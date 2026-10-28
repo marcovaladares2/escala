@@ -1,0 +1,8 @@
+function openSettings(state) {
+  const dialog = document.getElementById("settings-dialog");
+  const resident = RESIDENTS.find((item) => item.id === state.selectedResidentId);
+  dialog.innerHTML = `<div class="dialog-content"><div class="dialog-header"><div><h2 id="settings-dialog-title">Configurações</h2><p class="muted">Dados salvos somente neste dispositivo.</p></div><button class="dialog-close" type="button" data-action="close-dialog" aria-label="Fechar">×</button></div><section class="settings-section"><p class="detail-label">Perfil atual</p><p class="detail-value">${resident ? `${escapeHtml(resident.name)} · ${resident.level}` : "Nenhum residente selecionado"}</p><button class="secondary-button" type="button" data-action="open-picker-from-settings">Trocar residente</button></section><section class="settings-section"><p class="detail-label">Backup dos meus dados</p><button class="secondary-button" type="button" data-action="export-backup">Exportar backup</button><button class="secondary-button" type="button" data-action="trigger-import">Importar backup</button><input id="backup-file" type="file" accept="application/json" hidden></section><section class="settings-section"><p class="detail-label">Alterações pessoais</p><p class="muted">As alterações pessoais não modificam a escala oficial do serviço.</p><button class="secondary-button danger-button" type="button" data-action="clear-personal-changes">Limpar alterações pessoais</button></section><section class="settings-section"><p class="detail-label">Sobre</p><p class="muted">Escala Pediatria · 21/09/2026 a 28/02/2027. A Visão Geral usa a escala oficial. Dados locais não são sincronizados entre dispositivos.</p></section></div>`;
+  dialog.showModal();
+}
+
+window.openSettings = openSettings;

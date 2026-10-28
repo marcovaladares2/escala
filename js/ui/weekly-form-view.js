@@ -1,0 +1,13 @@
+function renderWeeklyFormDialog(state, options = {}) {
+  const dialog = document.getElementById("detail-dialog");
+  const residentId = options.residentId || state.selectedResidentId || RESIDENTS[0].id;
+  const monthValue = options.monthValue || state.selectedDate.slice(0, 7);
+  const institution = options.institution || "UNIATENAS";
+  const resident = RESIDENTS.find((item) => item.id === residentId);
+  const weeks = weeklyFormService.getWeeksForMonth(monthValue);
+  const selectedStarts = options.selectedStarts || [weeklyFormService.mondayOf(state.selectedDate)];
+  dialog.innerHTML = `<form class="dialog-content weekly-form" id="weekly-form-form"><div class="dialog-header"><div><h2 id="detail-dialog-title">Gerar ficha semanal</h2><p class="muted">A ficha usa a escala oficial e mantém as alterações pessoais fora do documento.</p></div><button class="dialog-close" type="button" data-action="close-dialog" aria-label="Fechar">×</button></div><label>Residente<select name="residentId" data-action="refresh-weekly-form">${RESIDENTS.map((item) => `<option value="${item.id}" ${item.id === residentId ? "selected" : ""}>${escapeHtml(item.fullName || item.name)} · ${item.level}</option>`).join("")}</select></label><label>Instituição<select name="institution" data-action="refresh-weekly-form"><option value="AGAS" ${institution === "AGAS" ? "selected" : ""}>AGAS</option><option value="UNIATENAS" ${institution === "UNIATENAS" ? "selected" : ""}>UniAtenas</option></select></label><label>Mês<input name="monthValue" type="month" min="2026-09" max="2027-02" value="${monthValue}" data-action="refresh-weekly-form"></label><fieldset class="week-choice"><legend>Semanas disponíveis</legend>${weeks.map((week) => { const schedule = getOfficialScheduleForResident(residentId, week.start); const checked = selectedStarts.includes(week.start) ? "checked" : ""; return `<label><input type="checkbox" name="weekStart" value="${week.start}" ${checked}> <span>${formatDateShort(week.start)} a ${formatDateShort(week.end)}</span><small>${schedule.status === "OK" ? schedule.standardWeekKey : "Sem escala"}</small></label>`; }).join("")}</fieldset><div class="weekly-preview"><strong>Pré-visualização</strong><p>${escapeHtml(resident.fullName || resident.name)} · ${resident.level}</p><p>${institution === "AGAS" ? "AGAS" : "UniAtenas"} · mês de referência ${monthValue.slice(5, 7)}/${monthValue.slice(0, 4)}</p></div><p class="form-warning" hidden></p><div class="dialog-actions"><button class="primary-button" type="submit">Gerar fichas DOCX</button><button class="secondary-button" type="button" data-action="close-dialog">Cancelar</button></div></form>`;
+  dialog.showModal();
+}
+
+window.renderWeeklyFormDialog = renderWeeklyFormDialog;
